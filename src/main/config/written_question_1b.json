@@ -5,5 +5,5 @@
   "maxDepth": 10,
   "timeoutSeconds": 7,
   "popularWordCount": 5,
-  "profileOutputPath": "profileData_1b.txt"
+  "profileOutputPath": "profileData.txt"
 }

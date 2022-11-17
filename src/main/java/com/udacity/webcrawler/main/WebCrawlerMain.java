@@ -12,6 +12,7 @@ import com.udacity.webcrawler.profiler.ProfilerModule;
 
 import javax.inject.Inject;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
@@ -42,16 +43,27 @@ public final class WebCrawlerMain {
     if(Objects.nonNull(fileName) && !fileName.isEmpty()) {
       resultWriter.write(Paths.get(fileName));
     } else {
-      Writer streamWriter = new OutputStreamWriter(System.out);
-      resultWriter.write(streamWriter);
+      try (Writer streamWriter = new OutputStreamWriter(System.out)) {
+        resultWriter.write(streamWriter);
+        streamWriter.flush();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
     // TODO: Write the profile data to a text file (or System.out if the file name is empty)
     String profileFile = config.getProfileOutputPath();
+
     if(Objects.nonNull(profileFile)) {
-      resultWriter.write(Paths.get(profileFile));
+      profiler.writeData(Paths.get(profileFile));
     } else {
-      Writer streamWriter = new OutputStreamWriter(System.out);
-      profiler.writeData(streamWriter);
+      try (Writer streamWriter = new OutputStreamWriter(System.out)){
+        profiler.writeData(streamWriter);
+        streamWriter.flush();
+      }catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+
     }
   }
 
